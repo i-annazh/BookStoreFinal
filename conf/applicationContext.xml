@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+
+	<!-- 配置自动扫描包 -->
+	<context:component-scan base-package="com.why.bookshop"></context:component-scan>
+	<!-- 加载配置文件 -->
+	<context:property-placeholder location="classpath:db.properties" />
+	<!-- 配置数据源 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="user" value="${jdbc.user}"></property>
+		<property name="password" value="${jdbc.password}"></property>
+		<property name="driverClass" value="${jdbc.driverClass}"></property>
+		<property name="jdbcUrl" value="${jdbc.jdbcUrl}"></property>
+
+		<property name="initialPoolSize" value="${jdbc.initPoolSize}"></property>
+		<property name="maxPoolSize" value="${jdbc.maxPoolSize}"></property>
+	</bean>
+
+	<!-- 配置 Book jdbcTemplate -->
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+
+	<!-- <bean id="viewIndexAction" class="com.why.bookshop.action.IndexAction" 
+		scope="prototype"> </bean> <bean id="viewAboutUs" class="com.why.bookshop.action.IndexAction" 
+		scope="prototype"> </bean> <bean id="viewBooks" class="com.why.bookshop.action.IndexAction" 
+		scope="prototype"> </bean> <bean id="viewSpecialBooks" class="com.why.bookshop.action.IndexAction" 
+		scope="prototype"> </bean> <bean id="viewMyAccount" class="com.why.bookshop.action.IndexAction" 
+		scope="prototype"> </bean> <bean id="viewRegister" class="com.why.bookshop.action.IndexAction" 
+		scope="prototype"> </bean> <bean id="viewPrice" class="com.why.bookshop.action.IndexAction" 
+		scope="prototype"> </bean> <bean id="viewContact" class="com.why.bookshop.action.IndexAction" 
+		scope="prototype"> </bean> <bean id="viewCart" class="com.why.bookshop.action.IndexAction" 
+		scope="prototype"> </bean> -->
+
+	<!-- <bean id="person" class="com.atguigu.spring.struts2.beans.Person"> 
+		<property name="username" value="spring"></property> </bean> <bean id="personService" 
+		class="com.atguigu.spring.struts2.services.PersonService"></bean> -->
+
+	<!-- 注意: 在 IOC 容器中配置 Struts2 的 Action 时, 需要配置 scope 属性, 其值必须为 prototype -->
+	<!-- <bean id="personAction" class="com.atguigu.spring.struts2.actions.PersonAction" 
+		scope="prototype"> <property name="personService" ref="personService"></property> 
+		</bean> -->
+</beans>

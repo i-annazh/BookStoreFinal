@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+
+	<constant name="struts.enable.DynamicMethodInvocation" value="false" />
+	<constant name="struts.devMode" value="true" />
+
+	<package name="default" namespace="" extends="struts-default">
+
+		<interceptors>
+			<!-- 登录拦截器 -->
+
+			<interceptor name="loginInterceptor"
+				class="com.why.bookshop.admin.interceptor.LoginInterceptor"></interceptor>
+
+			<interceptor-stack name="whyInterceptorStack">
+
+				<!-- <interceptor-ref name="paramsPrepareParamsStack"> <param name="prepare.alwaysInvokePrepare">false</param> 
+					</interceptor-ref> -->
+
+				<interceptor-ref name="paramsPrepareParamsStack">
+					<param name="prepare.alwaysInvokePrepare">false</param>
+
+				</interceptor-ref>
+
+				<interceptor-ref name="defaultStack">
+					<!-- default 2097152 -->
+					<param name="fileUpload.maximumSize">2097152</param>
+					<param name="fileUpload.allowedExtensions">png, jpg</param>
+				</interceptor-ref>
+
+			</interceptor-stack>
+		</interceptors>
+
+		<default-interceptor-ref name="whyInterceptorStack"></default-interceptor-ref>
+		<!-- 配置全局登录失败返回的页面 -->
+		<global-results>
+			<result name="login_failt">/admin_jsps/login.jsp</result>
+		</global-results>
+
+
+		<!-- 文件下载 -->
+		<action name="valicodeAction" class="com.why.bookshop.front.utils.YZM"
+			method="getValicode">
+			<result type="stream">
+				<param name="bufferSize">2048</param>
+			</result>
+		</action>
+
+		<action name="view-*" class="com.why.bookshop.front.action.BookAction"
+			method="view{1}">
+			<result name="index">/jsps/index.jsp</result>
+			<result name="about">/jsps/about.jsp</result>
+			<result name="category">/jsps/category.jsp</result>
+			<result name="specials">/jsps/specials.jsp</result>
+			<result name="myaccount">/jsps/myaccount.jsp</result>
+			<result name="register">/jsps/register.jsp</result>
+			<result name="details">/jsps/details.jsp</result>
+			<result name="contact">/jsps/contact.jsp</result>
+			<result name="cart">/jsps/cart.jsp</result>
+		</action>
+
+		<action name="user-*" class="com.why.bookshop.front.action.UserAction"
+			method="user{1}">
+			<result name="login_success" type="chain">
+				<param name="actionName">view-MyAccount</param>
+				<param name="namespace"></param>
+			</result>
+			<result name="login_cancle" type="chain">
+				<param name="actionName">view-MyAccount</param>
+				<param name="namespace"></param>
+			</result>
+			<result name="login_failt" type="chain">
+				<param name="actionName">view-MyAccount</param>
+				<param name="namespace"></param>
+			</result>
+			<result name="register-success" type="chain">
+				<param name="actionName">view-Register</param>
+				<param name="namespace"></param>
+			</result>
+			<result name="register-failt" type="chain">
+				<param name="actionName">view-Register</param>
+				<param name="namespace"></param>
+			</result>
+		</action>
+
+		<action name="cart-*" class="com.why.bookshop.front.action.CartAction"
+			method="cart{1}">
+			<result name="myaccount" type="chain">
+				<param name="actionName">view-MyAccount</param>
+				<param name="namespace"></param>
+			</result>
+			<result name="delete-success" type="chain">
+				<param name="actionName">view-Cart</param>
+				<param name="namespace"></param>
+			</result>
+			<result name="insert-success" type="chain">
+				<param name="actionName">view-Cart</param>
+				<param name="namespace"></param>
+			</result>
+		</action>
+
+
+
+		<!-- 管理员登录 -->
+		<action name="admin-login" method="adminValidation"
+			class="com.why.bookshop.admin.action.AdminLoginAction">
+
+			<result name="login_success" type="redirectAction">
+				<param name="actionName">admin-view</param>
+				<param name="namespace"></param>
+			</result>
+		</action>
+
+		<!-- 管理员管理图书 -->
+		<action name="admin-*" method="{1}Book"
+			class="com.why.bookshop.admin.action.AdminManagerBook">
+
+			<interceptor-ref name="loginInterceptor"></interceptor-ref>
+			<interceptor-ref name="whyInterceptorStack"></interceptor-ref>
+			<result name="view">/admin_jsps/index.jsp</result>
+
+			<result name="delete_success" type="redirectAction">
+				<param name="actionName">admin-view</param>
+				<param name="namespace"></param>
+			</result>
+
+			<result name="edit_page" type="chain">
+					<param name="actionName">admin-update</param>
+					<param name="namespace"></param>
+			</result>
+			
+			<result name="edit_page_redirect" type="redirectAction">
+					<param name="actionName">admin-view</param>
+					<param name="namespace"></param>
+			</result>
+
+			<result name="edit_page">/admin_jsps/edit.jsp</result>
+			<result name="delete_failt">/admin_jsps/failt.jsp</result>
+		</action>
+
+
+	</package>
+
+</struts>
